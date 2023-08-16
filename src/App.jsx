@@ -46,10 +46,6 @@ function App() {
 
   return (
     <div>
-      {/* <h1>Tik Tak Toe</h1>
-      <h2>Player one: {name1}</h2>
-      <h2>Player two: {name2}</h2> */}
-
       <div className="ttt-grid">
         {isChoosingSymbol ? (
           <ChooseSymbol onSelectSymbol={handleSymbolSelection} />
