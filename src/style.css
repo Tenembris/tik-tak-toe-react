@@ -1,0 +1,189 @@
+:root {
+  --cell-size: 120px;
+
+  --color: #81c3fd; /* for hover */
+  --color-set: #0275d8; /* when set */
+  --l: 10px; /* X line-width */
+  overflow: hidden;
+}
+
+body {
+  margin: 0;
+}
+
+.GameBoardOverlay {
+  background-color: #392259;
+  width: 100vw;
+  height: 100vh;
+  color: #d6acf2;
+  font-size: 2rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.GameBoardOverlay h1,
+h3,
+h4 {
+  text-align: center;
+}
+
+.GameBoardOverlay h4 {
+  margin-top: -10px;
+  font-size: 1.5rem;
+}
+
+.GameBoardOverlay button {
+  width: 100px;
+  height: 60px;
+  opacity: 0.5;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.5s;
+  border: none;
+  background-color: #190f26;
+  color: #81c3fd;
+}
+
+.GameBoardOverlay button:hover {
+  transform: scale(1.2);
+}
+
+.ChooseSymbolOverlay {
+  background-color: #392259;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  margin: auto;
+}
+
+.ChooseSymbolOverlay h1 {
+  margin: 0;
+  text-align: center;
+}
+
+.SymbolsContainer {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.SymbolsContainer button {
+  background-color: transparent;
+  border: 2px solid black;
+  width: 200px;
+  height: 300px;
+  font-size: 5rem;
+  transition: 0.2s;
+  margin: 50px;
+}
+
+.SymbolsContainer button:hover {
+  border: 2px solid #d6acf2;
+  color: #d6acf2;
+  cursor: pointer;
+}
+.popup-overlay {
+  width: 100vw;
+  height: 100vh;
+  z-index: 5;
+  position: absolute;
+  background-color: #392259;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.popup-overlay h1,
+.ChooseSymbolOverlay h1 {
+  font-size: 4rem;
+  color: #d6acf2;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  color: #d6acf2;
+}
+
+form input {
+  margin: 0.5rem;
+  border-radius: 10px;
+  border: none;
+  padding: 4px;
+}
+
+form button {
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  background-color: #190f26;
+  height: 40px;
+  color: #d6acf2;
+  transition: 0.2s;
+}
+
+form button:hover {
+  transform: scale(1.1);
+}
+
+.disabled {
+  background-color: grey;
+}
+
+.disabled:hover {
+  transform: none;
+}
+.board {
+  width: 100vw;
+
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  justify-items: center;
+  align-items: center;
+  grid-template-columns: repeat(3, auto);
+}
+
+.cell {
+  width: var(--cell-size);
+  height: var(--cell-size);
+  border: 1px solid #d6acf2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  cursor: pointer;
+}
+
+/* remove border for edges */
+.cell:nth-child(1),
+.cell:nth-child(2),
+.cell:nth-child(3) {
+  border-top: none;
+}
+
+.cell:nth-child(1),
+.cell:nth-child(4),
+.cell:nth-child(7) {
+  border-left: none;
+}
+
+.cell:nth-child(3),
+.cell:nth-child(6),
+.cell:nth-child(9) {
+  border-right: none;
+}
+
+.cell:nth-child(7),
+.cell:nth-child(8),
+.cell:nth-child(9) {
+  border-bottom: none;
+}
