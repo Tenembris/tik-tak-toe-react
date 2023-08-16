@@ -1,7 +1,7 @@
 # React + Vite
 
 Link to aplication: 
-/tik-tak-toe-aplication-react.netlify.app/
+#tik-tak-toe-aplication-react.netlify.app
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
