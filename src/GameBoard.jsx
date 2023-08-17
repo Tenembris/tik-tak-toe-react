@@ -6,6 +6,10 @@ import Confetti from "react-confetti";
 
 let winnerSymbol;
 const GameBoard = ({ playerName, playerSymbol }) => {
+  const [winningCombination, setWinningCombination] = useState([]);
+  const [player1points, setPlayer1Points] = useState(0);
+  const [player2points, setPlayer2Points] = useState(0);
+
   const { width, height } = useWindowSize();
   const WINNING_COMBINATIONS = [
     [0, 1, 2],
@@ -26,10 +30,11 @@ const GameBoard = ({ playerName, playerSymbol }) => {
     for (const combination of WINNING_COMBINATIONS) {
       const [a, b, c] = combination;
       if (cells[a] === symbol && cells[b] === symbol && cells[c] === symbol) {
-        return true;
+        console.log([a, b, c]);
+        return combination;
       }
     }
-    return false;
+    return null;
   };
 
   const countEmptyCells = () => {
@@ -60,9 +65,12 @@ const GameBoard = ({ playerName, playerSymbol }) => {
   };
 
   const PlayAgain = () => {
+    setWinningCombination([]);
+
     setGameState("ongoing");
     setCells(Array(9).fill(""));
     setCurrentSymbol("X");
+
     // setPlayer(name1Value);
   };
 
@@ -77,24 +85,26 @@ const GameBoard = ({ playerName, playerSymbol }) => {
   //   }
 
   useEffect(() => {
-    console.log("effect");
-    console.log("effect", countEmptyCells());
     const isXWinner = checkWin("X");
     const isOWinner = checkWin("O");
 
-    if (isXWinner) {
+    if (isXWinner || isOWinner) {
       setGameState("win");
-      console.log("Player X wins!");
-      winnerSymbol = "X";
-    } else if (isOWinner) {
-      winnerSymbol = "O";
-      setGameState("win");
-      console.log("Player O wins!");
+      console.log(isXWinner ? "Player X wins!" : "Player O wins!");
+      setWinningCombination(isXWinner || isOWinner); // Set the winning combination indices
     } else if (countEmptyCells() === 0) {
       setGameState("draw");
       console.log("It's a draw!");
     } else {
       togglePlayer();
+    }
+
+    if (isXWinner) {
+      setPlayer1Points(player1points + 1);
+      winnerSymbol = "X";
+    } else if (isOWinner) {
+      setPlayer2Points(player2points + 1);
+      winnerSymbol = "O";
     }
   }, [cells]);
 
@@ -105,7 +115,11 @@ const GameBoard = ({ playerName, playerSymbol }) => {
         {cells.map((cell, index) => (
           <div
             key={index}
-            className="cell"
+            className={`cell ${
+              winningCombination && winningCombination.includes(index)
+                ? "winning"
+                : ""
+            }`}
             onClick={() => handleCellClick(index)}
           >
             {cell}
@@ -121,6 +135,16 @@ const GameBoard = ({ playerName, playerSymbol }) => {
 
       <button onClick={PlayAgain}>Reset</button>
       {gameState === "win" ? <Confetti width={width} height={height} /> : null}
+      <div className="points">
+        <div>
+          <label className="PlayerNamePoints">{name1Value}: </label>
+          <label>{player1points}</label>
+        </div>
+        <div>
+          <label>{player2points}</label>
+          <label className="PlayerNamePoints"> :{name2Value}</label>
+        </div>
+      </div>
     </div>
   );
 };
