@@ -162,6 +162,7 @@ form button:hover {
   align-items: center;
   position: relative;
   cursor: pointer;
+  transition: 0.3s ease-in-out;
 }
 
 /* remove border for edges */
@@ -192,7 +193,6 @@ form button:hover {
 
 @media screen and (max-width: 768px) and (max-height: 1024px) {
   :root {
-    --cell-size: 90px;
     overflow: hidden;
   }
 
@@ -224,4 +224,55 @@ form button:hover {
   .SymbolsContainer button:nth-child(2) {
     font-size: 6rem;
   }
+}
+
+.transition-container {
+  opacity: 1;
+  transition: opacity 0.5s ease-in-out; /* Adjust timing and easing as needed */
+}
+
+.transition-container.hidden {
+  opacity: 0;
+  pointer-events: none; /* Disable interactions during transition */
+}
+
+.winning {
+  /* Apply your winning combination styling here */
+  color: white;
+  transition: 0.5s ease-in;
+  font-size: 3rem;
+}
+
+.points {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100vw;
+  padding: 0;
+  margin: 10px;
+  padding: 0 15px;
+}
+
+.points label {
+  margin: 0;
+  padding: 10px;
+  font-size: 1.5rem;
+}
+
+.PlayerNamePoints {
+  font-size: 2rem !important;
+  font-weight: bold;
+}
+
+.points div {
+  display: flex;
+  align-items: center;
+}
+
+.glowing-animation {
+  /* Your regular styling here */
+  background-color: yellow; /* Change as needed */
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
 }

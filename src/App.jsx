@@ -3,6 +3,7 @@ import Popup from "./Popup";
 import ChooseSymbol from "./ChooseSymbol"; // Import the component for choosing symbols
 import GameBoard from "./GameBoard"; //
 import "./style.css";
+import { motion } from "framer-motion";
 
 export let name1Value = "";
 export let name2Value = "";
@@ -46,10 +47,6 @@ function App() {
 
   return (
     <div>
-      {/* <h1>Tik Tak Toe</h1>
-      <h2>Player one: {name1}</h2>
-      <h2>Player two: {name2}</h2> */}
-
       <div className="ttt-grid">
         {isChoosingSymbol ? (
           <ChooseSymbol onSelectSymbol={handleSymbolSelection} />
@@ -73,3 +70,4 @@ function App() {
 }
 
 export default App;
+// TODO bug możesz kliknąć to samo pole dwa razy, na mobile scrennie dziwnie można przesunąć ekran
