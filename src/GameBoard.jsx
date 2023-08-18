@@ -8,11 +8,16 @@ import { motion } from "framer-motion";
 let winnerSymbol;
 let winner;
 const GameBoard = ({ playerName, playerSymbol }) => {
+  const [randomNumber, setRandomNumber] = useState(null);
   const [winningCombination, setWinningCombination] = useState([]);
   const [player1points, setPlayer1Points] = useState(0);
   const [player2points, setPlayer2Points] = useState(0);
+  const [remaingIndexes, setRemaingIndexes] = useState([
+    0, 1, 2, 4, 5, 6, 7, 8,
+  ]);
 
   const { width, height } = useWindowSize();
+
   const WINNING_COMBINATIONS = [
     [0, 1, 2],
     [3, 4, 5],
@@ -40,7 +45,32 @@ const GameBoard = ({ playerName, playerSymbol }) => {
   };
 
   const countEmptyCells = () => {
-    return cells.filter((cell) => cell === "").length;
+    return cells;
+  };
+
+  // const generateRandomNumber = () => {
+  //   const min = 0; // Minimum value
+  //   const max = 8; // Maximum value
+  //   const random = Math.floor(Math.random() * (max - min + 1)) + min;
+  //   setRandomNumber(random);
+  // };
+
+  // const easyBotPlayer = () => {
+  //   generateRandomNumber();
+  // };
+
+  // const emptyCellsCounter = () => {
+  //   return cells.filter((cell) => cell === "");
+  // };
+
+  const getRandomIndex = () => {
+    if (remaingIndexes.length === 0) {
+      console.log("null");
+    } else {
+      const randomIndex = Math.floor(Math.random() * remaingIndexes.length);
+      const randomElement = remaingIndexes[randomIndex];
+      return randomElement;
+    }
   };
 
   const togglePlayer = () => {
@@ -63,8 +93,21 @@ const GameBoard = ({ playerName, playerSymbol }) => {
       console.log(`Clicked on cell ${index}`);
       togglePlayer();
       console.log("1", countEmptyCells());
+      removeIndexFromArray(index);
+      console.log(getRandomIndex());
+      // handleCPUCellClick(getRandomIndex());
     }
   };
+
+  // const handleCPUCellClick = (randomIndex) => {
+  //   if (gameState === "ongoing") {
+  //     const newCells = [...cells];
+  //     newCells[randomIndex] = currentSymbol;
+  //     setCells(newCells);
+  //     togglePlayer();
+  //     removeIndexFromArray(randomIndex);
+  //   }
+  // };
 
   const PlayAgain = () => {
     setWinningCombination([]);
@@ -74,6 +117,13 @@ const GameBoard = ({ playerName, playerSymbol }) => {
     setCurrentSymbol("X");
 
     // setPlayer(name1Value);
+  };
+
+  const removeIndexFromArray = (indexToRemove) => {
+    const updatedIndexes = remaingIndexes.filter(
+      (index) => index !== indexToRemove
+    );
+    setRemaingIndexes(updatedIndexes);
   };
 
   useEffect(() => {
@@ -100,46 +150,57 @@ const GameBoard = ({ playerName, playerSymbol }) => {
       winnerSymbol = "O";
       winner = `${name2Value} (${winnerSymbol}) Won!`;
     }
+    console.log(remaingIndexes);
   }, [cells]);
 
   return (
     <div className="GameBoardOverlay">
-      <h1>Tik tak toe</h1>
-      <div className="board" id="board">
-        {cells.map((cell, index) => (
-          <div
-            key={index}
-            className={`cell ${
-              winningCombination && winningCombination.includes(index)
-                ? "winning"
-                : ""
-            }`}
-            onClick={() => handleCellClick(index)}
-          >
-            {cell}
+      <motion.div
+        className="animated-container"
+        initial={{ x: -100, opacity: 0 }}
+        animate={{ x: 0, opacity: 1 }}
+        exit={{ x: -100, opacity: 0 }}
+        transition={{ duration: 0.7 }} // Set the duration of the animation in seconds
+      >
+        <h1>Tik tak toe</h1>
+        <div className="board" id="board">
+          {cells.map((cell, index) => (
+            <div
+              key={index}
+              className={`cell ${
+                winningCombination && winningCombination.includes(index)
+                  ? "winning"
+                  : ""
+              }`}
+              onClick={() => handleCellClick(index)}
+            >
+              {cell}
+            </div>
+          ))}
+        </div>
+
+        <div>
+          <h3>Turn: {player}</h3>
+          <h4>Your Symbol: {currentSymbol}</h4>
+        </div>
+
+        {gameState === "win" && <h3>Player {winner}</h3>}
+
+        {gameState === "win" ? (
+          <Confetti width={width} height={height} />
+        ) : null}
+        <div className="points">
+          <div>
+            <label className="PlayerNamePoints">{name1Value}: </label>
+            <label>{player1points}</label>
           </div>
-        ))}
-      </div>
-
-      <div>
-        <h3>Turn: {player}</h3>
-        <h4>Your Symbol: {currentSymbol}</h4>
-      </div>
-
-      {gameState === "win" && <h3>Player {winner}</h3>}
-
-      <button onClick={PlayAgain}>Reset</button>
-      {gameState === "win" ? <Confetti width={width} height={height} /> : null}
-      <div className="points">
-        <div>
-          <label className="PlayerNamePoints">{name1Value}: </label>
-          <label>{player1points}</label>
+          <button onClick={PlayAgain}>Reset</button>
+          <div>
+            <label>{player2points}</label>
+            <label className="PlayerNamePoints"> :{name2Value}</label>
+          </div>
         </div>
-        <div>
-          <label>{player2points}</label>
-          <label className="PlayerNamePoints"> :{name2Value}</label>
-        </div>
-      </div>
+      </motion.div>
     </div>
   );
 };

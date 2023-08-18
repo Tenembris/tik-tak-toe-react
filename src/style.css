@@ -249,7 +249,6 @@ form button:hover {
   width: 100vw;
   padding: 0;
   margin: 10px;
-  padding: 0 15px;
 }
 
 .points label {
@@ -274,4 +273,12 @@ form button:hover {
   border-radius: 50%;
   width: 100px;
   height: 100px;
+}
+
+.animated-container {
+  /* Your animation-related styles here */
+}
+
+.no-interaction {
+  pointer-events: none;
 }
