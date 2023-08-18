@@ -6,6 +6,7 @@ import Confetti from "react-confetti";
 import { motion } from "framer-motion";
 
 let winnerSymbol;
+let winner;
 const GameBoard = ({ playerName, playerSymbol }) => {
   const [winningCombination, setWinningCombination] = useState([]);
   const [player1points, setPlayer1Points] = useState(0);
@@ -93,9 +94,11 @@ const GameBoard = ({ playerName, playerSymbol }) => {
     if (isXWinner) {
       setPlayer1Points(player1points + 1);
       winnerSymbol = "X";
+      winner = `${name1Value} (${winnerSymbol}) Won!`;
     } else if (isOWinner) {
       setPlayer2Points(player2points + 1);
       winnerSymbol = "O";
+      winner = `${name2Value} (${winnerSymbol}) Won!`;
     }
   }, [cells]);
 
@@ -123,7 +126,7 @@ const GameBoard = ({ playerName, playerSymbol }) => {
         <h4>Your Symbol: {currentSymbol}</h4>
       </div>
 
-      {gameState === "win" && <h3>Player {winnerSymbol} wins!</h3>}
+      {gameState === "win" && <h3>Player {winner}</h3>}
 
       <button onClick={PlayAgain}>Reset</button>
       {gameState === "win" ? <Confetti width={width} height={height} /> : null}
