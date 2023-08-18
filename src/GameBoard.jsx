@@ -160,7 +160,7 @@ const GameBoard = ({ playerName, playerSymbol }) => {
         initial={{ x: -100, opacity: 0 }}
         animate={{ x: 0, opacity: 1 }}
         exit={{ x: -100, opacity: 0 }}
-        transition={{ duration: 0.7 }} // Set the duration of the animation in seconds
+        transition={{ duration: 0.7 }}
       >
         <h1>Tik tak toe</h1>
         <div className="board" id="board">
