@@ -3,6 +3,7 @@ import { name1Value, name2Value } from "./App";
 import { useState } from "react";
 import useWindowSize from "react-use/lib/useWindowSize";
 import Confetti from "react-confetti";
+import { motion } from "framer-motion";
 
 let winnerSymbol;
 const GameBoard = ({ playerName, playerSymbol }) => {
@@ -46,6 +47,8 @@ const GameBoard = ({ playerName, playerSymbol }) => {
       prevPlayer === name1Value ? name2Value : name1Value
     );
 
+    setCurrentSymbol((prevSymbol) => (prevSymbol === "X" ? "O" : "X"));
+
     // setCurrentSymbol((prevSymbol) => (prevSymbol === "X" ? "O" : "X"));
   };
 
@@ -57,11 +60,9 @@ const GameBoard = ({ playerName, playerSymbol }) => {
       setCells(newCells);
       console.log(currentSymbol);
       console.log(`Clicked on cell ${index}`);
-
+      togglePlayer();
       console.log("1", countEmptyCells());
     }
-
-    setCurrentSymbol((prevSymbol) => (prevSymbol === "X" ? "O" : "X"));
   };
 
   const PlayAgain = () => {
@@ -73,16 +74,6 @@ const GameBoard = ({ playerName, playerSymbol }) => {
 
     // setPlayer(name1Value);
   };
-
-  //   if (checkWin(currentSymbol)) {
-  //     setGameState("win");
-  //     console.log(`Player ${currentSymbol} wins!`);
-  //     console.log("2", countEmptyCells());
-  //   } else {
-  //     togglePlayer();
-  //     setCurrentSymbol((prevSymbol) => (prevSymbol === "X" ? "O" : "X"));
-  //     console.log(countEmptyCells());
-  //   }
 
   useEffect(() => {
     const isXWinner = checkWin("X");
@@ -96,7 +87,7 @@ const GameBoard = ({ playerName, playerSymbol }) => {
       setGameState("draw");
       console.log("It's a draw!");
     } else {
-      togglePlayer();
+      null;
     }
 
     if (isXWinner) {
@@ -131,6 +122,7 @@ const GameBoard = ({ playerName, playerSymbol }) => {
         <h3>Turn: {player}</h3>
         <h4>Your Symbol: {currentSymbol}</h4>
       </div>
+
       {gameState === "win" && <h3>Player {winnerSymbol} wins!</h3>}
 
       <button onClick={PlayAgain}>Reset</button>
