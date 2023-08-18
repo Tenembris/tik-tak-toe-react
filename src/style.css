@@ -237,7 +237,6 @@ form button:hover {
 }
 
 .winning {
-  /* Apply your winning combination styling here */
   color: white;
   transition: 0.5s ease-in;
   font-size: 3rem;
