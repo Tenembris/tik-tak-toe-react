@@ -39,7 +39,6 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
     for (const combination of WINNING_COMBINATIONS) {
       const [a, b, c] = combination;
       if (cells[a] === symbol && cells[b] === symbol && cells[c] === symbol) {
-        console.log([a, b, c]);
         return combination;
       }
     }
@@ -51,7 +50,7 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
   };
 
   const getRandomIndex = () => {
-    if (remaingIndexes.length === 0) {
+    if (remaingIndexes.length === 0 && gameState === "ongoing") {
       console.log("null");
     } else {
       const randomIndex = Math.floor(Math.random() * remaingIndexes.length);
@@ -61,7 +60,9 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
   };
 
   const performAIMove = () => {
+    console.log("przed", gameState);
     if (remaingIndexes.length === 0 || gameState !== "ongoing") {
+      console.log("nie działa");
       return; // No remaining moves for AI to make or game has ended
     }
 
@@ -70,17 +71,6 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
     newCells[randomAIIndex] = aiSymbol; // Use AI symbol here
     setCells(newCells);
     console.log(`AI moved to cell ${randomAIIndex}`);
-
-    // Check for win or draw after AI's move
-    const isAIWinner = checkWin(newCells[randomAIIndex]);
-    if (isAIWinner) {
-      setGameState("win");
-      console.log("AI wins!");
-      setWinningCombination(isAIWinner);
-    } else if (countEmptyCells().length === 0) {
-      setGameState("draw");
-      console.log("It's a draw!");
-    }
 
     togglePlayer();
     removeIndexFromArray(randomAIIndex);
@@ -92,13 +82,13 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
       playWithAi === true &&
       gameState === "ongoing"
     ) {
-      console.log(currentSymbol);
-      console.log(player);
-      setTimeout(() => {
+      const aiMoveTimeout = setTimeout(() => {
         performAIMove();
       }, 1000);
+
+      return () => clearTimeout(aiMoveTimeout);
     }
-  }, [userClickedCell, playWithAi]);
+  }, [userClickedCell, playWithAi, gameState]);
 
   const togglePlayer = () => {
     setPlayer((prevPlayer) =>
@@ -118,7 +108,6 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
 
       togglePlayer();
       removeIndexFromArray(index);
-      console.log(playWithAi);
 
       setUserClickedCell(index); // Set user's last clicked cell
     }
@@ -129,10 +118,9 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
 
     setGameState("ongoing");
     setCells(Array(9).fill(""));
-    setCurrentSymbol("X");
-    console.log("ai", playWithAi);
-    console.log("indexes", remaingIndexes);
-    console.log("clicked", userClickedCell);
+    // setCurrentSymbol("X");
+
+    setRemaingIndexes([0, 1, 2, 4, 5, 6, 7, 8]);
     // setPlayer(name1Value);
   };
 
@@ -147,7 +135,6 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
     const isXWinner = checkWin("X");
     const isOWinner = checkWin("O");
 
-    console.log("gamestate", gameState);
     if (isXWinner || isOWinner) {
       setGameState("win");
       console.log(isXWinner ? "Player X wins!" : "Player O wins!");
@@ -159,6 +146,8 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
       null;
     }
 
+    console.log(currentSymbol);
+
     if (isXWinner) {
       setPlayer1Points(player1points + 1);
       winnerSymbol = "X";
@@ -168,13 +157,8 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
       winnerSymbol = "O";
       winner = `${name2Value} (${winnerSymbol}) Won!`;
     }
-    console.log(remaingIndexes);
-    console.log(cells);
   }, [cells]);
 
-  // const handleCheckBox = (event) => {
-  //   setPlayWithAi(event.target.checked);
-  // };
   return (
     <div className="GameBoardOverlay">
       <motion.div
@@ -242,4 +226,5 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
 
 export default GameBoard;
 
-//bugs: score bug, po winie ai daj znak, reset nie działa
+//bugs: score bug, po winie ai daj znak
+//TODO PO RESECIE TYLKO O DZIAŁA, POWINNO ZMIENIAĆ STRONY
