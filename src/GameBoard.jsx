@@ -17,6 +17,7 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
   const [remaingIndexes, setRemaingIndexes] = useState([
     0, 1, 2, 4, 5, 6, 7, 8,
   ]);
+  const [startSign, setStartSign] = useState("X");
 
   const { width, height } = useWindowSize();
   const aiSymbol = playerSymbol === "X" ? "O" : "X";
@@ -84,7 +85,7 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
     ) {
       const aiMoveTimeout = setTimeout(() => {
         performAIMove();
-      }, 1000);
+      }, 500);
 
       return () => clearTimeout(aiMoveTimeout);
     }
@@ -114,13 +115,19 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
   };
 
   const PlayAgain = () => {
+    console.log(startSign);
+    // if (startSign == "X") {
+    setUserClickedCell(null);
+    // }
+
     setWinningCombination([]);
 
     setGameState("ongoing");
     setCells(Array(9).fill(""));
-    // setCurrentSymbol("X");
+    setCurrentSymbol(playerSymbol);
 
     setRemaingIndexes([0, 1, 2, 4, 5, 6, 7, 8]);
+
     // setPlayer(name1Value);
   };
 
@@ -136,6 +143,11 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
     const isOWinner = checkWin("O");
 
     if (isXWinner || isOWinner) {
+      if (startSign === "X") {
+        setStartSign("O");
+      } else {
+        setStartSign("X");
+      }
       setGameState("win");
       console.log(isXWinner ? "Player X wins!" : "Player O wins!");
       setWinningCombination(isXWinner || isOWinner); // Set the winning combination indices
