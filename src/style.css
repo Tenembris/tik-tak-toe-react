@@ -275,10 +275,108 @@ form button:hover {
   height: 100px;
 }
 
-.animated-container {
-  /* Your animation-related styles here */
-}
-
 .no-interaction {
   pointer-events: none;
+}
+
+.toggler-wrapper.style-11
+  input[type="checkbox"]:checked
+  + .toggler-slider:after {
+  content: "On";
+}
+
+.toggler-wrapper.style-11
+  input[type="checkbox"]:checked
+  + .toggler-slider
+  .toggler-knob {
+  left: calc(100% - 19px - 3px);
+}
+
+.toggler-wrapper.style-11 .toggler-slider:after {
+  content: "Off";
+  position: absolute;
+  top: 50%;
+  right: -25px;
+  -webkit-transform: translateY(-50%);
+  transform: translateY(-50%);
+  font-size: 75%;
+  text-transform: uppercase;
+  font-weight: 500;
+  opacity: 0.7;
+}
+
+.toggler-wrapper.style-11 .toggler-knob {
+  width: calc(25px - 6px);
+  height: calc(25px - 6px);
+  border-radius: 50%;
+  left: 3px;
+  top: 3px;
+  background-color: #fff;
+}
+
+.h1-line {
+  display: flex;
+  flex-direction: row;
+}
+.h1-line:before,
+.h1-line:after {
+  content: "";
+  flex: 1 1;
+  border-bottom: 1px solid;
+  margin: auto;
+}
+.h1-line:before {
+  margin-right: 10px;
+}
+.h1-line:after {
+  margin-left: 10px;
+}
+
+.playWithCPU {
+  width: 100vw;
+  height: 50vh;
+}
+
+.playWithFriend {
+  height: 50vh;
+  width: 100vw;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+
+.playWithCPU div {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.playWithCPU div label,
+.playWithCPU div input,
+.playWithCPU div button {
+  width: 200px;
+}
+
+.playWithCPU div h2 {
+  font-size: 4rem;
+  color: #d6acf2;
+}
+
+.playWithCPU div input {
+  border-radius: 10px;
+  padding: 4px;
+  border: none;
+}
+
+.playWithCPU div button {
+  border-radius: 10px;
+  background-color: #190f26;
+  border: none;
+  width: 200px;
+  height: 50px;
+  color: white;
+  cursor: pointer;
 }

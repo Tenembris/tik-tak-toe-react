@@ -14,6 +14,7 @@ export function setName1Value(name1, name2) {
 }
 
 function App() {
+  const [playWithAi, setPlayWithAi] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [name1, setName1] = useState("");
   const [name2, setName2] = useState("");
@@ -51,11 +52,15 @@ function App() {
         {isChoosingSymbol ? (
           <ChooseSymbol onSelectSymbol={handleSymbolSelection} />
         ) : (
-          <GameBoard playerName={name1} playerSymbol={selectedSymbol} />
+          <GameBoard
+            playerName={name1}
+            playerSymbol={selectedSymbol}
+            playWithAi={playWithAi}
+          />
         )}
         {console.log(isChoosingSymbol)}
       </div>
-
+      {console.log(playWithAi)}
       <Popup
         isOpen={isPopupOpen}
         onClose={closePopup}
@@ -64,6 +69,7 @@ function App() {
         setName1={setName1}
         name2={name2} // Pass name1 and setName1 as props
         setName2={setName2}
+        setPlayWithAi={setPlayWithAi}
       />
     </div>
   );

@@ -7,9 +7,11 @@ import { motion } from "framer-motion";
 
 let winnerSymbol;
 let winner;
-const GameBoard = ({ playerName, playerSymbol }) => {
+
+const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
   const [randomNumber, setRandomNumber] = useState(null);
   const [winningCombination, setWinningCombination] = useState([]);
+  const [userClickedCell, setUserClickedCell] = useState(null);
   const [player1points, setPlayer1Points] = useState(0);
   const [player2points, setPlayer2Points] = useState(0);
   const [remaingIndexes, setRemaingIndexes] = useState([
@@ -17,7 +19,7 @@ const GameBoard = ({ playerName, playerSymbol }) => {
   ]);
 
   const { width, height } = useWindowSize();
-
+  const aiSymbol = playerSymbol === "X" ? "O" : "X";
   const WINNING_COMBINATIONS = [
     [0, 1, 2],
     [3, 4, 5],
@@ -48,21 +50,6 @@ const GameBoard = ({ playerName, playerSymbol }) => {
     return cells;
   };
 
-  // const generateRandomNumber = () => {
-  //   const min = 0; // Minimum value
-  //   const max = 8; // Maximum value
-  //   const random = Math.floor(Math.random() * (max - min + 1)) + min;
-  //   setRandomNumber(random);
-  // };
-
-  // const easyBotPlayer = () => {
-  //   generateRandomNumber();
-  // };
-
-  // const emptyCellsCounter = () => {
-  //   return cells.filter((cell) => cell === "");
-  // };
-
   const getRandomIndex = () => {
     if (remaingIndexes.length === 0) {
       console.log("null");
@@ -72,6 +59,46 @@ const GameBoard = ({ playerName, playerSymbol }) => {
       return randomElement;
     }
   };
+
+  const performAIMove = () => {
+    if (remaingIndexes.length === 0 || gameState !== "ongoing") {
+      return; // No remaining moves for AI to make or game has ended
+    }
+
+    const randomAIIndex = getRandomIndex(); // Get a random index for AI move
+    const newCells = [...cells];
+    newCells[randomAIIndex] = aiSymbol; // Use AI symbol here
+    setCells(newCells);
+    console.log(`AI moved to cell ${randomAIIndex}`);
+
+    // Check for win or draw after AI's move
+    const isAIWinner = checkWin(newCells[randomAIIndex]);
+    if (isAIWinner) {
+      setGameState("win");
+      console.log("AI wins!");
+      setWinningCombination(isAIWinner);
+    } else if (countEmptyCells().length === 0) {
+      setGameState("draw");
+      console.log("It's a draw!");
+    }
+
+    togglePlayer();
+    removeIndexFromArray(randomAIIndex);
+  };
+
+  useEffect(() => {
+    if (
+      userClickedCell !== null &&
+      playWithAi === true &&
+      gameState === "ongoing"
+    ) {
+      console.log(currentSymbol);
+      console.log(player);
+      setTimeout(() => {
+        performAIMove();
+      }, 1000);
+    }
+  }, [userClickedCell, playWithAi]);
 
   const togglePlayer = () => {
     setPlayer((prevPlayer) =>
@@ -84,30 +111,18 @@ const GameBoard = ({ playerName, playerSymbol }) => {
   };
 
   const handleCellClick = (index) => {
-    console.log("0", countEmptyCells());
     if (cells[index] === "" && gameState === "ongoing") {
       const newCells = [...cells];
       newCells[index] = currentSymbol;
       setCells(newCells);
-      console.log(currentSymbol);
-      console.log(`Clicked on cell ${index}`);
+
       togglePlayer();
-      console.log("1", countEmptyCells());
       removeIndexFromArray(index);
-      console.log(getRandomIndex());
-      // handleCPUCellClick(getRandomIndex());
+      console.log(playWithAi);
+
+      setUserClickedCell(index); // Set user's last clicked cell
     }
   };
-
-  // const handleCPUCellClick = (randomIndex) => {
-  //   if (gameState === "ongoing") {
-  //     const newCells = [...cells];
-  //     newCells[randomIndex] = currentSymbol;
-  //     setCells(newCells);
-  //     togglePlayer();
-  //     removeIndexFromArray(randomIndex);
-  //   }
-  // };
 
   const PlayAgain = () => {
     setWinningCombination([]);
@@ -115,7 +130,9 @@ const GameBoard = ({ playerName, playerSymbol }) => {
     setGameState("ongoing");
     setCells(Array(9).fill(""));
     setCurrentSymbol("X");
-
+    console.log("ai", playWithAi);
+    console.log("indexes", remaingIndexes);
+    console.log("clicked", userClickedCell);
     // setPlayer(name1Value);
   };
 
@@ -130,6 +147,7 @@ const GameBoard = ({ playerName, playerSymbol }) => {
     const isXWinner = checkWin("X");
     const isOWinner = checkWin("O");
 
+    console.log("gamestate", gameState);
     if (isXWinner || isOWinner) {
       setGameState("win");
       console.log(isXWinner ? "Player X wins!" : "Player O wins!");
@@ -151,8 +169,12 @@ const GameBoard = ({ playerName, playerSymbol }) => {
       winner = `${name2Value} (${winnerSymbol}) Won!`;
     }
     console.log(remaingIndexes);
+    console.log(cells);
   }, [cells]);
 
+  // const handleCheckBox = (event) => {
+  //   setPlayWithAi(event.target.checked);
+  // };
   return (
     <div className="GameBoardOverlay">
       <motion.div
@@ -195,6 +217,19 @@ const GameBoard = ({ playerName, playerSymbol }) => {
             <label>{player1points}</label>
           </div>
           <button onClick={PlayAgain}>Reset</button>
+
+          {/* <div>
+            <label className="toggler-wrapper style-11">
+              <input
+                type="checkbox"
+                checked={playWithAi}
+                onChange={handleCheckBox}
+              />
+              <div className="toggler-slider">
+                <div className="toggler-knob"></div>
+              </div>
+            </label>
+          </div> */}
           <div>
             <label>{player2points}</label>
             <label className="PlayerNamePoints"> :{name2Value}</label>
@@ -206,3 +241,5 @@ const GameBoard = ({ playerName, playerSymbol }) => {
 };
 
 export default GameBoard;
+
+//bugs: score bug, po winie ai daj znak, reset nie działa
