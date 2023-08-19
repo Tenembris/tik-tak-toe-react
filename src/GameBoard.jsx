@@ -214,18 +214,6 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
           </div>
           <button onClick={PlayAgain}>Reset</button>
 
-          {/* <div>
-            <label className="toggler-wrapper style-11">
-              <input
-                type="checkbox"
-                checked={playWithAi}
-                onChange={handleCheckBox}
-              />
-              <div className="toggler-slider">
-                <div className="toggler-knob"></div>
-              </div>
-            </label>
-          </div> */}
           <div>
             <label>{player2points}</label>
             <label className="PlayerNamePoints"> :{name2Value}</label>
