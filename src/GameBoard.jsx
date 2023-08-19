@@ -7,17 +7,20 @@ import { motion } from "framer-motion";
 
 let winnerSymbol;
 let winner;
-const GameBoard = ({ playerName, playerSymbol }) => {
+
+const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
   const [randomNumber, setRandomNumber] = useState(null);
   const [winningCombination, setWinningCombination] = useState([]);
+  const [userClickedCell, setUserClickedCell] = useState(null);
   const [player1points, setPlayer1Points] = useState(0);
   const [player2points, setPlayer2Points] = useState(0);
   const [remaingIndexes, setRemaingIndexes] = useState([
     0, 1, 2, 4, 5, 6, 7, 8,
   ]);
+  const [startSign, setStartSign] = useState("X");
 
   const { width, height } = useWindowSize();
-
+  const aiSymbol = playerSymbol === "X" ? "O" : "X";
   const WINNING_COMBINATIONS = [
     [0, 1, 2],
     [3, 4, 5],
@@ -37,7 +40,6 @@ const GameBoard = ({ playerName, playerSymbol }) => {
     for (const combination of WINNING_COMBINATIONS) {
       const [a, b, c] = combination;
       if (cells[a] === symbol && cells[b] === symbol && cells[c] === symbol) {
-        console.log([a, b, c]);
         return combination;
       }
     }
@@ -48,23 +50,8 @@ const GameBoard = ({ playerName, playerSymbol }) => {
     return cells;
   };
 
-  // const generateRandomNumber = () => {
-  //   const min = 0; // Minimum value
-  //   const max = 8; // Maximum value
-  //   const random = Math.floor(Math.random() * (max - min + 1)) + min;
-  //   setRandomNumber(random);
-  // };
-
-  // const easyBotPlayer = () => {
-  //   generateRandomNumber();
-  // };
-
-  // const emptyCellsCounter = () => {
-  //   return cells.filter((cell) => cell === "");
-  // };
-
   const getRandomIndex = () => {
-    if (remaingIndexes.length === 0) {
+    if (remaingIndexes.length === 0 && gameState === "ongoing") {
       console.log("null");
     } else {
       const randomIndex = Math.floor(Math.random() * remaingIndexes.length);
@@ -72,6 +59,37 @@ const GameBoard = ({ playerName, playerSymbol }) => {
       return randomElement;
     }
   };
+
+  const performAIMove = () => {
+    console.log("przed", gameState);
+    if (remaingIndexes.length === 0 || gameState !== "ongoing") {
+      console.log("nie działa");
+      return; // No remaining moves for AI to make or game has ended
+    }
+
+    const randomAIIndex = getRandomIndex(); // Get a random index for AI move
+    const newCells = [...cells];
+    newCells[randomAIIndex] = aiSymbol; // Use AI symbol here
+    setCells(newCells);
+    console.log(`AI moved to cell ${randomAIIndex}`);
+
+    togglePlayer();
+    removeIndexFromArray(randomAIIndex);
+  };
+
+  useEffect(() => {
+    if (
+      userClickedCell !== null &&
+      playWithAi === true &&
+      gameState === "ongoing"
+    ) {
+      const aiMoveTimeout = setTimeout(() => {
+        performAIMove();
+      }, 500);
+
+      return () => clearTimeout(aiMoveTimeout);
+    }
+  }, [userClickedCell, playWithAi, gameState]);
 
   const togglePlayer = () => {
     setPlayer((prevPlayer) =>
@@ -84,37 +102,31 @@ const GameBoard = ({ playerName, playerSymbol }) => {
   };
 
   const handleCellClick = (index) => {
-    console.log("0", countEmptyCells());
     if (cells[index] === "" && gameState === "ongoing") {
       const newCells = [...cells];
       newCells[index] = currentSymbol;
       setCells(newCells);
-      console.log(currentSymbol);
-      console.log(`Clicked on cell ${index}`);
+
       togglePlayer();
-      console.log("1", countEmptyCells());
       removeIndexFromArray(index);
-      console.log(getRandomIndex());
-      // handleCPUCellClick(getRandomIndex());
+
+      setUserClickedCell(index); // Set user's last clicked cell
     }
   };
 
-  // const handleCPUCellClick = (randomIndex) => {
-  //   if (gameState === "ongoing") {
-  //     const newCells = [...cells];
-  //     newCells[randomIndex] = currentSymbol;
-  //     setCells(newCells);
-  //     togglePlayer();
-  //     removeIndexFromArray(randomIndex);
-  //   }
-  // };
-
   const PlayAgain = () => {
+    console.log(startSign);
+    // if (startSign == "X") {
+    setUserClickedCell(null);
+    // }
+
     setWinningCombination([]);
 
     setGameState("ongoing");
     setCells(Array(9).fill(""));
-    setCurrentSymbol("X");
+    setCurrentSymbol(playerSymbol);
+
+    setRemaingIndexes([0, 1, 2, 4, 5, 6, 7, 8]);
 
     // setPlayer(name1Value);
   };
@@ -131,6 +143,11 @@ const GameBoard = ({ playerName, playerSymbol }) => {
     const isOWinner = checkWin("O");
 
     if (isXWinner || isOWinner) {
+      if (startSign === "X") {
+        setStartSign("O");
+      } else {
+        setStartSign("X");
+      }
       setGameState("win");
       console.log(isXWinner ? "Player X wins!" : "Player O wins!");
       setWinningCombination(isXWinner || isOWinner); // Set the winning combination indices
@@ -141,6 +158,8 @@ const GameBoard = ({ playerName, playerSymbol }) => {
       null;
     }
 
+    console.log(currentSymbol);
+
     if (isXWinner) {
       setPlayer1Points(player1points + 1);
       winnerSymbol = "X";
@@ -150,7 +169,6 @@ const GameBoard = ({ playerName, playerSymbol }) => {
       winnerSymbol = "O";
       winner = `${name2Value} (${winnerSymbol}) Won!`;
     }
-    console.log(remaingIndexes);
   }, [cells]);
 
   return (
@@ -195,6 +213,19 @@ const GameBoard = ({ playerName, playerSymbol }) => {
             <label>{player1points}</label>
           </div>
           <button onClick={PlayAgain}>Reset</button>
+
+          {/* <div>
+            <label className="toggler-wrapper style-11">
+              <input
+                type="checkbox"
+                checked={playWithAi}
+                onChange={handleCheckBox}
+              />
+              <div className="toggler-slider">
+                <div className="toggler-knob"></div>
+              </div>
+            </label>
+          </div> */}
           <div>
             <label>{player2points}</label>
             <label className="PlayerNamePoints"> :{name2Value}</label>
@@ -206,3 +237,6 @@ const GameBoard = ({ playerName, playerSymbol }) => {
 };
 
 export default GameBoard;
+
+//bugs: score bug, po winie ai daj znak
+//TODO PO RESECIE TYLKO O DZIAŁA, POWINNO ZMIENIAĆ STRONY
