@@ -18,7 +18,7 @@ const ChooseSymbol = ({ onSelectSymbol }) => {
 
       setTimeout(() => {
         setPlayer1Symbol(symbol);
-        setPlayer2Symbol(symbol === "X" ? "O" : "X");
+        setPlayer2Symbol(symbol === "⨉" ? "◯" : "⨉");
         onSelectSymbol(symbol);
       }, 700); // Adjust the duration to match the animation duration
     }
@@ -43,17 +43,17 @@ const ChooseSymbol = ({ onSelectSymbol }) => {
             >
               <motion.button
                 className="button button-X"
-                onClick={() => handleSymblSelection("X")}
+                onClick={() => handleSymblSelection("⨉")}
                 whileHover={!animationInProgress ? { scale: 1.1 } : {}}
               >
-                ✖
+                ⨉
               </motion.button>
               <motion.button
                 className="button button-O"
-                onClick={() => handleSymblSelection("O")}
+                onClick={() => handleSymblSelection("◯")}
                 whileHover={!animationInProgress ? { scale: 1.1 } : {}}
               >
-                ○
+                ◯
               </motion.button>
             </div>
           </motion.div>

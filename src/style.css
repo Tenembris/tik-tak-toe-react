@@ -1,5 +1,5 @@
 :root {
-  --cell-size: 120px;
+  --cell-size: 150px;
 
   --color: #81c3fd; /* for hover */
   --color-set: #0275d8; /* when set */
@@ -165,6 +165,16 @@ form button:hover {
   transition: 0.3s ease-in-out;
 }
 
+.cell {
+  font-size: 3rem;
+}
+
+.cell-content {
+  opacity: 0;
+  border: none;
+  transition: opacity 0.5s ease-in-out;
+}
+
 /* remove border for edges */
 .cell:nth-child(1),
 .cell:nth-child(2),
@@ -218,11 +228,21 @@ form button:hover {
     width: 120px;
     height: 120px;
 
-    font-size: 4rem;
+    font-size: 5rem;
   }
 
-  .SymbolsContainer button:nth-child(2) {
+  .SymbolsContainer button:nth-child(1) {
     font-size: 6rem;
+  }
+
+  .playWithCPU div h2 {
+    text-align: center;
+    font-size: 2.5rem !important;
+  }
+
+  .popup-overlay h1 {
+    text-align: center;
+    font-size: 2.5rem;
   }
 }
 
@@ -239,7 +259,7 @@ form button:hover {
 .winning {
   color: white;
   transition: 0.5s ease-in;
-  font-size: 3rem;
+  font-size: 3.5rem;
 }
 
 .points {
@@ -335,6 +355,7 @@ form button:hover {
 .playWithCPU {
   width: 100vw;
   height: 50vh;
+  transition: 0.5s ease-in;
 }
 
 .playWithFriend {
@@ -344,6 +365,7 @@ form button:hover {
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  transition: 0.5s ease-in;
 }
 
 .playWithCPU div {
@@ -352,7 +374,13 @@ form button:hover {
   flex-direction: column;
   align-items: center;
   gap: 10px;
+  transition: 0.3s ease-in;
 }
+
+/* .playWithCPU:hover,
+.playWithFriend:hover {
+  height: 85vh;
+} */
 
 .playWithCPU div label,
 .playWithCPU div input,
