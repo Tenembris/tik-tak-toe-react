@@ -34,35 +34,37 @@ const Popup = ({
     <div className="popup-overlay">
       <div className="popup-content">
         <div className="playWithFriend">
-          <h1>Set your nicknames!</h1>
-          <form onSubmit={onSubmit}>
-            <label>
-              Name 1:
-              <input
-                type="text"
-                value={name1}
-                onChange={(e) => setName1(e.target.value)}
-              />
-            </label>
-            <label>
-              Name 2:
-              <input
-                type="text"
-                value={name2}
-                onChange={(e) => setName2(e.target.value)}
-              />
-            </label>
+          <div>
+            <h1>Play with Friend</h1>
+            <form onSubmit={onSubmit}>
+              <label>
+                Name 1:
+                <input
+                  type="text"
+                  value={name1}
+                  onChange={(e) => setName1(e.target.value)}
+                />
+              </label>
+              <label>
+                Name 2:
+                <input
+                  type="text"
+                  value={name2}
+                  onChange={(e) => setName2(e.target.value)}
+                />
+              </label>
 
-            <button type="submit" id="submit" className="disabled" disabled>
-              Submit
-            </button>
-          </form>
+              <button type="submit" id="submit" className="disabled" disabled>
+                Submit
+              </button>
+            </form>
+          </div>
         </div>
 
         <div className="playWithCPU">
           <h1 className="h1-line">OR</h1>
           <div>
-            <h2>Play With Computer! alfa version be aware of bugs</h2>
+            <h2>Play Solo! (bugs)</h2>
 
             <form onSubmit={onSubmit}>
               <label>Your Nickname</label>

@@ -17,10 +17,10 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
   const [remaingIndexes, setRemaingIndexes] = useState([
     0, 1, 2, 4, 5, 6, 7, 8,
   ]);
-  const [startSign, setStartSign] = useState("X");
+  const [startSign, setStartSign] = useState("⨉");
 
   const { width, height } = useWindowSize();
-  const aiSymbol = playerSymbol === "X" ? "O" : "X";
+  const aiSymbol = playerSymbol === "⨉" ? "◯" : "⨉";
   const WINNING_COMBINATIONS = [
     [0, 1, 2],
     [3, 4, 5],
@@ -96,7 +96,7 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
       prevPlayer === name1Value ? name2Value : name1Value
     );
 
-    setCurrentSymbol((prevSymbol) => (prevSymbol === "X" ? "O" : "X"));
+    setCurrentSymbol((prevSymbol) => (prevSymbol === "⨉" ? "◯" : "⨉"));
 
     // setCurrentSymbol((prevSymbol) => (prevSymbol === "X" ? "O" : "X"));
   };
@@ -110,7 +110,7 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
       togglePlayer();
       removeIndexFromArray(index);
 
-      setUserClickedCell(index); // Set user's last clicked cell
+      setUserClickedCell(index);
     }
   };
 
@@ -139,14 +139,14 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
   };
 
   useEffect(() => {
-    const isXWinner = checkWin("X");
-    const isOWinner = checkWin("O");
+    const isXWinner = checkWin("⨉");
+    const isOWinner = checkWin("◯");
 
     if (isXWinner || isOWinner) {
       if (startSign === "X") {
-        setStartSign("O");
+        setStartSign("◯");
       } else {
-        setStartSign("X");
+        setStartSign("⨉");
       }
       setGameState("win");
       console.log(isXWinner ? "Player X wins!" : "Player O wins!");
@@ -162,11 +162,11 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
 
     if (isXWinner) {
       setPlayer1Points(player1points + 1);
-      winnerSymbol = "X";
+      winnerSymbol = "⨉";
       winner = `${name1Value} (${winnerSymbol}) Won!`;
     } else if (isOWinner) {
       setPlayer2Points(player2points + 1);
-      winnerSymbol = "O";
+      winnerSymbol = "◯";
       winner = `${name2Value} (${winnerSymbol}) Won!`;
     }
   }, [cells]);
@@ -226,5 +226,4 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
 
 export default GameBoard;
 
-//bugs: score bug, po winie ai daj znak
 //TODO PO RESECIE TYLKO O DZIAŁA, POWINNO ZMIENIAĆ STRONY
