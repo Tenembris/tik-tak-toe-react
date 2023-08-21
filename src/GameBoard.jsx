@@ -18,6 +18,7 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
     0, 1, 2, 4, 5, 6, 7, 8,
   ]);
   const [startSign, setStartSign] = useState("⨉");
+  const [waitForTurn, setWaitForTurn] = useState(false);
 
   const { width, height } = useWindowSize();
   const aiSymbol = playerSymbol === "⨉" ? "◯" : "⨉";
@@ -61,6 +62,7 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
   };
 
   const performAIMove = () => {
+    setWaitForTurn(false);
     console.log("przed", gameState);
     if (remaingIndexes.length === 0 || gameState !== "ongoing") {
       console.log("nie działa");
@@ -92,6 +94,9 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
   }, [userClickedCell, playWithAi, gameState]);
 
   const togglePlayer = () => {
+    if (playWithAi === false) {
+      setWaitForTurn(false);
+    }
     setPlayer((prevPlayer) =>
       prevPlayer === name1Value ? name2Value : name1Value
     );
@@ -102,7 +107,12 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
   };
 
   const handleCellClick = (index) => {
-    if (cells[index] === "" && gameState === "ongoing") {
+    if (
+      cells[index] === "" &&
+      gameState === "ongoing" &&
+      waitForTurn === false
+    ) {
+      setWaitForTurn(true);
       const newCells = [...cells];
       newCells[index] = currentSymbol;
       setCells(newCells);
@@ -116,6 +126,7 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
 
   const PlayAgain = () => {
     console.log(startSign);
+    setWaitForTurn(false);
     // if (startSign == "X") {
     setUserClickedCell(null);
     // }
