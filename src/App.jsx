@@ -4,9 +4,19 @@ import ChooseSymbol from "./ChooseSymbol"; // Import the component for choosing 
 import GameBoard from "./GameBoard"; //
 import "./style.css";
 import { motion } from "framer-motion";
+// import Player from "./player";
+import Player from "./player";
 
 export let name1Value = "";
 export let name2Value = "";
+
+export function getAvailableMoves(cells) {
+  const moves = [];
+  cells.forEach((cell, index) => {
+    if (!cell) moves.push(index);
+  });
+  return moves;
+}
 
 export function setName1Value(name1, name2) {
   name1Value = name1;
@@ -18,7 +28,28 @@ function App() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [name1, setName1] = useState("");
   const [name2, setName2] = useState("");
+  const [cells, setCells] = useState(Array(9).fill(""));
 
+  const WINNING_COMBINATIONS = [
+    [0, 1, 2],
+    [3, 4, 5],
+    [6, 7, 8],
+    [0, 3, 6],
+    [1, 4, 7],
+    [2, 5, 8],
+    [0, 4, 8],
+    [2, 4, 6],
+  ];
+
+  const checkWin = (symbol, cells) => {
+    for (const combination of WINNING_COMBINATIONS) {
+      const [a, b, c] = combination;
+      if (cells[a] === symbol && cells[b] === symbol && cells[c] === symbol) {
+        return combination;
+      }
+    }
+    return null;
+  };
   setName1Value(name1, name2);
 
   const [isChoosingSymbol, setIsChoosingSymbol] = useState(true);
@@ -56,11 +87,14 @@ function App() {
             playerName={name1}
             playerSymbol={selectedSymbol}
             playWithAi={playWithAi}
+            WINNING_COMBINATIONS={WINNING_COMBINATIONS}
+            cells={cells}
+            setCells={setCells}
+            checkWin={checkWin} // Pass the checkWin prop here
           />
         )}
-        {console.log(isChoosingSymbol)}
       </div>
-      {console.log(playWithAi)}
+
       <Popup
         isOpen={isPopupOpen}
         onClose={closePopup}
@@ -71,6 +105,11 @@ function App() {
         setName2={setName2}
         setPlayWithAi={setPlayWithAi}
       />
+      {/* <Player
+        cells={cells}
+        checkWin={checkWin}
+        WINNING_COMBINATIONS={WINNING_COMBINATIONS}
+      /> */}
     </div>
   );
 }

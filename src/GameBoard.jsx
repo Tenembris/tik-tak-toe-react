@@ -4,11 +4,34 @@ import { useState } from "react";
 import useWindowSize from "react-use/lib/useWindowSize";
 import Confetti from "react-confetti";
 import { motion } from "framer-motion";
+import { getAvailableMoves } from "./App";
+import Player from "./player";
+import { render } from "react-dom";
 
+// Export the cells state
 let winnerSymbol;
 let winner;
+let bestMoveForSure;
+let clicking = 0;
+let startRender = 0;
+const GameBoard = ({
+  playerName,
+  playerSymbol,
+  playWithAi,
+  WINNING_COMBINATIONS, // Import the WINNING_COMBINATIONS array
+  cells,
+  checkWin,
+  setCells,
+}) => {
+  const player1 = new Player(-1);
 
-const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
+  const bestMove = player1.getBestMove(checkWin, cells);
+  console.log("dasd", bestMove);
+  // bestMoveForSure = bestMove;
+
+  console.log("render: ", startRender);
+  console.log("render and cells", cells);
+  console.log("render best move", bestMove);
   const [randomNumber, setRandomNumber] = useState(null);
   const [winningCombination, setWinningCombination] = useState([]);
   const [userClickedCell, setUserClickedCell] = useState(null);
@@ -17,63 +40,68 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
   const [remaingIndexes, setRemaingIndexes] = useState([
     0, 1, 2, 4, 5, 6, 7, 8,
   ]);
+
   const [startSign, setStartSign] = useState("⨉");
   const [waitForTurn, setWaitForTurn] = useState(false);
 
   const { width, height } = useWindowSize();
   const aiSymbol = playerSymbol === "⨉" ? "◯" : "⨉";
-  const WINNING_COMBINATIONS = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
+  // const WINNING_COMBINATIONS = [
+  //   [0, 1, 2],
+  //   [3, 4, 5],
+  //   [6, 7, 8],
+  //   [0, 3, 6],
+  //   [1, 4, 7],
+  //   [2, 5, 8],
+  //   [0, 4, 8],
+  //   [2, 4, 6],
+  // ];
   const [player, setPlayer] = useState(name1Value); // Initialize player state
   const [currentSymbol, setCurrentSymbol] = useState(playerSymbol);
-  const [cells, setCells] = useState(Array(9).fill("")); // Initialize cell state
+  // const [cells, setCells] = useState(Array(9).fill("")); // Initialize cell state
+
   const [gameState, setGameState] = useState("ongoing");
 
-  const checkWin = (symbol) => {
-    for (const combination of WINNING_COMBINATIONS) {
-      const [a, b, c] = combination;
-      if (cells[a] === symbol && cells[b] === symbol && cells[c] === symbol) {
-        return combination;
-      }
-    }
-    return null;
-  };
+  // const checkWin = (symbol) => {
+  //   for (const combination of WINNING_COMBINATIONS) {
+  //     const [a, b, c] = combination;
+  //     if (cells[a] === symbol && cells[b] === symbol && cells[c] === symbol) {
+  //       return combination;
+  //     }
+  //   }
+  //   return null;
+  // };
 
   const countEmptyCells = () => {
     return cells;
   };
 
-  const getRandomIndex = () => {
-    if (remaingIndexes.length === 0 && gameState === "ongoing") {
-      console.log("null");
-    } else {
-      const randomIndex = Math.floor(Math.random() * remaingIndexes.length);
-      const randomElement = remaingIndexes[randomIndex];
-      return randomElement;
-    }
-  };
+  // const getRandomIndex = () => {
+  //   if (remaingIndexes.length === 0 && gameState === "ongoing") {
+  //     console.log("null");
+  //   } else {
+  //     const randomIndex = Math.floor(Math.random() * remaingIndexes.length);
+  //     const randomElement = remaingIndexes[randomIndex];
+  //     return randomElement;
+  //   }
+  // };
 
   const performAIMove = () => {
     setWaitForTurn(false);
-    console.log("przed", gameState);
+    let bestMoveForSure;
+    console.log("ai cells", checkWin, cells);
+    const bestMove = player1.getBestMove(checkWin, cells);
+    bestMoveForSure = bestMove;
+
+    console.log("aimove best move", bestMove);
     if (remaingIndexes.length === 0 || gameState !== "ongoing") {
-      console.log("nie działa");
       return; // No remaining moves for AI to make or game has ended
     }
 
-    const randomAIIndex = getRandomIndex(); // Get a random index for AI move
+    const randomAIIndex = bestMoveForSure; // Get a random index for AI move
     const newCells = [...cells];
     newCells[randomAIIndex] = aiSymbol; // Use AI symbol here
     setCells(newCells);
-    console.log(`AI moved to cell ${randomAIIndex}`);
 
     togglePlayer();
     removeIndexFromArray(randomAIIndex);
@@ -94,13 +122,18 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
   }, [userClickedCell, playWithAi, gameState]);
 
   const togglePlayer = () => {
-    if (playWithAi === false) {
-      setWaitForTurn(false);
-    }
+    // if (playWithAi === false) {
+    setWaitForTurn(false);
+    // }
     setPlayer((prevPlayer) =>
       prevPlayer === name1Value ? name2Value : name1Value
     );
 
+    const bestMove = player1.getBestMove(checkWin, cells);
+
+    console.log(clicking, "toggle", bestMove);
+    // bestMoveForSure = bestMove;
+    console.log("bestMovefor sure", bestMoveForSure);
     setCurrentSymbol((prevSymbol) => (prevSymbol === "⨉" ? "◯" : "⨉"));
 
     // setCurrentSymbol((prevSymbol) => (prevSymbol === "X" ? "O" : "X"));
@@ -121,11 +154,16 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
       removeIndexFromArray(index);
 
       setUserClickedCell(index);
+
+      console.log(cells);
+      const bestMove = player1.getBestMove(checkWin, cells);
+
+      console.log("handleclick best move", bestMove);
+      clicking++;
     }
   };
 
   const PlayAgain = () => {
-    console.log(startSign);
     setWaitForTurn(false);
     // if (startSign == "X") {
     setUserClickedCell(null);
@@ -150,8 +188,8 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
   };
 
   useEffect(() => {
-    const isXWinner = checkWin("⨉");
-    const isOWinner = checkWin("◯");
+    const isXWinner = checkWin("⨉", cells);
+    const isOWinner = checkWin("◯", cells);
 
     if (isXWinner || isOWinner) {
       if (startSign === "X") {
@@ -169,7 +207,9 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
       null;
     }
 
-    console.log(currentSymbol);
+    console.log("efect: ", startRender);
+    console.log("efect and cells", cells);
+    console.log("efect best move", bestMove);
 
     if (isXWinner) {
       setPlayer1Points(player1points + 1);
@@ -180,8 +220,10 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
       winnerSymbol = "◯";
       winner = `${name2Value} (${winnerSymbol}) Won!`;
     }
-  }, [cells]);
 
+    startRender++;
+  }, [cells]);
+  console.log("KONIEC");
   return (
     <div className="GameBoardOverlay">
       <motion.div
@@ -234,7 +276,9 @@ const GameBoard = ({ playerName, playerSymbol, playWithAi }) => {
     </div>
   );
 };
+// eslint-disable-next-line react-refresh/only-export-components
 
 export default GameBoard;
 
 //TODO PO RESECIE TYLKO O DZIAŁA, POWINNO ZMIENIAĆ STRONY
+//todo mało celi gameboard 147
